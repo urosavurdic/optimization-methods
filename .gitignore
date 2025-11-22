@@ -1,0 +1,19 @@
+# virtualenvs
+venv/
+.venv/
+
+# datasets download on first run
+*/data/
+
+# python
+__pycache__/
+*.py[cod]
+
+# original coursework material, kept locally for reference
+internal/
+
+# editors / os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
