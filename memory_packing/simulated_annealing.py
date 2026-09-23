@@ -11,6 +11,7 @@ import os
 
 import numpy as np
 
+from history import save_histories
 from problem import DIM, BUDGET, OBJECTIVES, report
 
 T0 = 32 * 1024 * 1024
@@ -87,8 +88,8 @@ def main():
     with open(os.path.join(results_dir, f"annealing_{args.objective}.json"), "w") as f:
         json.dump(summary, f, indent=2)
 
-    np.save(os.path.join(results_dir, f"annealing_{args.objective}_history.npy"),
-            np.minimum.accumulate(np.array(histories), axis=1))
+    save_histories(os.path.join(results_dir, f"annealing_{args.objective}_history.npz"),
+                   histories)
 
 
 if __name__ == "__main__":

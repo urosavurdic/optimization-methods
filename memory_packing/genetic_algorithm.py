@@ -18,6 +18,7 @@ import os
 
 import numpy as np
 
+from history import save_histories
 from problem import DIM, BUDGET, OBJECTIVES, report
 
 POP_SIZE = 2000
@@ -121,8 +122,7 @@ def main():
     with open(os.path.join(results_dir, f"genetic_{tag}.json"), "w") as f:
         json.dump(summary, f, indent=2)
 
-    np.save(os.path.join(results_dir, f"genetic_{tag}_history.npy"),
-            np.minimum.accumulate(np.array(histories), axis=1))
+    save_histories(os.path.join(results_dir, f"genetic_{tag}_history.npz"), histories)
 
 
 if __name__ == "__main__":
