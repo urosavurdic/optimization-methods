@@ -1,0 +1,15 @@
+{
+  "bits": "1101110110010010100010111000001111100100011110110001011011110111",
+  "selected": 36,
+  "total_bytes": 67108860,
+  "budget_bytes": 67108864,
+  "slack_bytes": 4,
+  "fits": true,
+  "score": 4,
+  "objective": "slack",
+  "runs": 20,
+  "generations": 50,
+  "population": 2000,
+  "elitism": false,
+  "seed": 0
+}

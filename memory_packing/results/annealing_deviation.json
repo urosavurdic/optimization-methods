@@ -1,0 +1,13 @@
+{
+  "bits": "0001111000111111101001001001001011010011110001100010011110101110",
+  "selected": 34,
+  "total_bytes": 67108863,
+  "budget_bytes": 67108864,
+  "slack_bytes": 1,
+  "fits": true,
+  "score": 1,
+  "objective": "deviation",
+  "runs": 20,
+  "iterations": 100000,
+  "seed": 0
+}
