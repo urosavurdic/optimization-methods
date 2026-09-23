@@ -30,14 +30,25 @@ def path_length(path, points):
     )
 
 
-def load_points(file_path, num_points=NUM_POINTS):
-    """Load `num_points` hole coordinates from JSON."""
+def load_points(file_path, num_points=NUM_POINTS, seed=None):
+    """Load hole coordinates from JSON.
+
+    By default this returns the *first* `num_points` holes in index order,
+    which is what the problem asks for ("the first 8", "the first 12"). Pass a
+    `seed` to draw a reproducible random subset instead -- useful for checking
+    that a heuristic is not overfitting one particular layout.
+    """
     with open(file_path, "r", encoding="utf-8") as f:
         raw = json.load(f)
 
-    items = list(raw.items())
-    sampled = random.sample(items, num_points)
-    return [tuple(v) for _, v in sampled]
+    items = sorted(((int(k), tuple(v)) for k, v in raw.items()))
+
+    if seed is None:
+        selected = items[:num_points]
+    else:
+        selected = sorted(random.Random(seed).sample(items, num_points))
+
+    return [xy for _, xy in selected]
 
 
 def describe(path, points, label="Path"):
