@@ -2,8 +2,14 @@
 
 Binary tournament selection, single-point crossover, single-bit mutation.
 
-Elitism is off by default: tournament selection alone gave more stable
-convergence across repeated runs than preserving the top fraction did.
+Elitism is off by default, which is the configuration the original experiment
+settled on: tournament selection alone gave more stable convergence across
+repeated runs than elitism did. Turning elitism off means the best individual
+can be bred out of the population between generations, so the champion is
+tracked *outside* the population -- `best_x` and `best_score` are updated
+together, and an assertion at the end enforces that the reported score really
+is the score of the reported solution. Tracking a running-minimum score while
+returning the final generation's best is how the two silently drift apart.
 """
 
 import argparse
@@ -36,7 +42,8 @@ def evolve(objective, rng, pop_size=POP_SIZE, generations=NUM_GEN,
     pop = rng.integers(0, 2, (pop_size, DIM))
     fitness = np.array([f(ind) for ind in pop])
 
-    best_score = int(np.min(fitness))
+    champion_idx = int(np.argmin(fitness))
+    best_x, best_score = pop[champion_idx].copy(), int(fitness[champion_idx])
 
     history = []
     elite_size = int(pop_size * elite_frac) if elitism else 0
@@ -66,10 +73,14 @@ def evolve(objective, rng, pop_size=POP_SIZE, generations=NUM_GEN,
         pop = np.array(new_pop)
         fitness = np.array([f(ind) for ind in pop])
 
-        best_score = min(best_score, int(np.min(fitness)))
+        # Champion is kept outside the population, so it survives even when a
+        # generation breeds it away.
+        gen_best = int(np.argmin(fitness))
+        if fitness[gen_best] < best_score:
+            best_x, best_score = pop[gen_best].copy(), int(fitness[gen_best])
         history.append(best_score)
 
-    return pop[int(np.argmin(fitness))].copy(), best_score, np.array(history)
+    return best_x, best_score, np.array(history)
 
 
 def main():
@@ -98,6 +109,7 @@ def main():
         print(f"run {run + 1:2d}/{args.runs}  best {score}")
 
     summary = report(best_x, args.objective)
+    assert summary["score"] == best_score, "best solution and best score disagree"
 
     print(f"\nBest {args.objective}: {best_score}")
     print(f"Selected {summary['selected']}/{DIM} requests, "
