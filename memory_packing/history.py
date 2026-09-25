@@ -11,7 +11,6 @@ Files are `.npz`: `steps` holds the iteration index of each sample, `runs` holds
 one row of best-so-far values per run.
 """
 
-import os
 
 import numpy as np
 
@@ -34,11 +33,6 @@ def save_histories(path, histories):
 
 
 def load_histories(path):
-    """Return (steps, runs). Accepts the legacy raw .npy layout too."""
-    if path.endswith(".npy") or not os.path.exists(path):
-        legacy = path.replace(".npz", ".npy")
-        if os.path.exists(legacy):
-            runs = np.load(legacy)
-            return np.arange(runs.shape[1]), runs
+    """Return (steps, runs) from a .npz written by save_histories."""
     data = np.load(path)
     return data["steps"], data["runs"]
